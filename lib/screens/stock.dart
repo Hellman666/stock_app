@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_sim/models/sqlite_model.dart';
+import 'package:stock_sim/services/sqlite_db.dart';
 import 'package:stock_sim/widgets/about_stock.dart';
 import 'package:stock_sim/widgets/buttons/action_button.dart';
 import 'package:stock_sim/widgets/buttons/stock_info.dart';
@@ -8,15 +10,14 @@ import 'package:stock_sim/widgets/chart.dart';
 class Stock extends StatefulWidget {
   final String stockSymbol;
 
-  Stock({
+  const Stock({
+    Key? key,
     required this.stockSymbol
-  });
+  }) : super(key: key);
 
   @override
   _StockState createState() => _StockState();
 }
-
-late final int price;
 
 class _StockState extends State<Stock> {
 
@@ -41,20 +42,30 @@ class _StockState extends State<Stock> {
           ),
           actions: <Widget>[
             IconButton(
-                icon: const Icon(
-                  Icons.star_border_outlined,
-                  color: Colors.white,
-                  size: 34.0,
-                ),
+
+                icon: Icon(isFavourite ? Icons.star : Icons.star_border_outlined, color: Colors.white, size: 34.0),
                 onPressed: () {
+                  setState(() {
+                    isFavourite ? Icons.star : Icons.star_border_outlined;
+                  });
                   print('zmáčknuto');
                   if(isFavourite == false){
                     isFavourite = true;
-                    addToFavourite();
+                    addToFavourite(widget.stockSymbol);
+                    icon: const Icon(
+                      Icons.star,
+                      color: Colors.white,
+                      size: 34.0,
+                    );
                   }
                   else{
                     isFavourite = false;
                     removeFromFavourite();
+                    icon: const Icon(
+                      Icons.star_border_outlined,
+                      color: Colors.white,
+                      size: 34.0,
+                    );
                   }
                 }
             )
@@ -119,14 +130,14 @@ class _StockState extends State<Stock> {
                   ],
                 ),
               ),
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.fromLTRB(12.0, 8.0, 0.0, 8.0),
                 child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text('About Stock', style: Theme.of(context).textTheme.headline4,)
                 ),
               ),
-              AboutStock(),
+              AboutStock(),*/
             ],
           ),
         ),
@@ -134,12 +145,15 @@ class _StockState extends State<Stock> {
     );
   }
 
-  void addToFavourite() {
-    print ('add to favourite' + widget.stockSymbol);
+addToFavourite(String symbol) async {
+    print ('add to favourite ' + widget.stockSymbol);
+    String FavSymbol = widget.stockSymbol;
+    //final symbol = Symbol(widget.stockSymbol);
+
   }
 
   void removeFromFavourite() {
-    print ("remove from favourite" + widget.stockSymbol);
+    print ("remove from favourite " + widget.stockSymbol);
   }
 }
 

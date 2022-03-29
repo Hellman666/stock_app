@@ -5,9 +5,9 @@ class StockCard extends StatelessWidget {
   final BuildContext context;
   final String title;
   final String name;
-  final double price;
+  //final String price;
 
-  StockCard({required this.context, required this.title, required this.name, required this.price});
+  StockCard({required this.context, required this.title, required this.name, /*required this.price*/});
 
   get _height => MediaQuery.of(context).size.height;
   get width => MediaQuery.of(context).size.width;
@@ -53,6 +53,10 @@ class StockCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    /*Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('$price', style: TextStyle(fontSize: 22)),
+                    ),*/
                   ],
                 ),
               ),
@@ -60,13 +64,13 @@ class StockCard extends StatelessWidget {
           ),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                     color: Colors.blue,
                     //color: Colors.blue,
                     spreadRadius: 2,
                     blurRadius: 8,
-                    offset: const Offset(4, 5)
+                    offset: Offset(4, 5)
                 ),
               ]
           ),

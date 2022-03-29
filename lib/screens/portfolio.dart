@@ -37,21 +37,13 @@ class Portfolio extends StatefulWidget {
 
 class _PortfolioState extends State<Portfolio> {
   int _selectedIndex = 1;
-  //bool _isSendingVerification = false;
-  //bool _isSigningOut = false;
-
-  //late User _currentUser;
 
   late APIManager _stockManager;
   late DatabaseHelper helper;
 
-
-
   @override
   void initState() {
     print('otevřeno');
-    _stockManager = APIManager();
-    _stockManager.getStock('AAPL');
     DatabaseHelper.getBalance().then((value) {
       User _userRow = User.fromMap(value[0]);
       setState(() {
@@ -65,13 +57,13 @@ class _PortfolioState extends State<Portfolio> {
       });
     });
 
-    DatabaseHelper.getFavourite().then((value) {
+    /*DatabaseHelper.getFavourite().then((value) {
       Favourite _favourite = Favourite.fromMap(value[0]);
       setState(() {
         _favouriteSymbol = _favourite.symbol;
         //_favouriteName = _favourite.name;
       });
-    });
+    });*/
     //_balance = storage.balance.toString();
 
     //_currentUser = widget.user;
@@ -106,9 +98,9 @@ class _PortfolioState extends State<Portfolio> {
                   Animation<double> animation,
                   Animation<double> secAnimation,)
               {
-                return Stocks(/*user: _currentUser*/);
+                return Stocks();
               }
-          ),
+            ),
           );
           break;
         case 1:
@@ -180,6 +172,7 @@ class _PortfolioState extends State<Portfolio> {
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    bool inFavourite = false;
     return Scaffold(
       extendBody: false,
       appBar: PreferredSize(
@@ -298,18 +291,26 @@ class _PortfolioState extends State<Portfolio> {
                             padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 4.0),
                             child: Text(_balance != null ? "\$ $_balance" : "Načítání...", style: TextStyle(fontSize: 38, color: Colors.black, letterSpacing: 2),),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 1.0),
-                            child: Text("Profit", style: TextStyle(fontSize: 20, color: Colors.black),),
-                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
-                                child: Text( _profit != null ? "\$ $_profit" : "Načítání...", style: TextStyle(fontSize: 28, color: Colors.black, letterSpacing: 2),),
+                              Column(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 1.0),
+                                    child: Text("Profit", style: TextStyle(fontSize: 20, color: Colors.black),),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                                    child: Text( _profit != null ? "\$ $_profit" : "Načítání...", style: TextStyle(fontSize: 28, color: Colors.black, letterSpacing: 2),),
+                                  ),
+                                ],
                               ),
                               Padding(
+                                padding: const EdgeInsets.only(left: 12.0),
+                                child: Image.asset('lib/assets/icon/icon.png', height: 70,),
+                              ),
+                              /*Padding(
                                 padding: const EdgeInsets.only(left: 12.0),
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -330,7 +331,7 @@ class _PortfolioState extends State<Portfolio> {
                                     ),
                                   ),
                                 ),
-                              )
+                              )*/
                             ],
                           ),
                         ],
@@ -340,8 +341,8 @@ class _PortfolioState extends State<Portfolio> {
                 ),
               ),
               SizedBox(height: _height*0.02,),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
+              const Padding(
+                padding: EdgeInsets.all(12.0),
                 child: Text("Watch List", style:TextStyle(fontSize: 32, letterSpacing: 2, color: Colors.black)),
               ),
               /*favourite.forEach((stock) {
@@ -362,8 +363,10 @@ class _PortfolioState extends State<Portfolio> {
                   }
                 },
               )*/
+              StockCardPf(context: context, title: /*_favouriteSymbol*/'AMZN', name: 'Amazon', price: 125, onClick: () { navigateToStockCardPf(/*_favouriteSymbol*/'AMZN'); }),
+              const Center(child: Text('Nothing in watch list', style: TextStyle(fontSize: 22, color: Colors.black),)),
 
-              StockCardPf(context: context, title: _favouriteSymbol, name: 'Tesla', price: 125, onClick: () { navigateToStockCardPf(_favouriteSymbol); }),
+              //StockCardPf(context: context, title: /*_favouriteSymbol*/'AMZN', name: 'Amazon', price: 125, onClick: () { navigateToStockCardPf(/*_favouriteSymbol*/'AMZN'); }),
               //StockCardPf(context: context, title:  "AAPL", name: "Apple", price: 170, onClick: () { navigateToStockCardPf("AAPL"); }),
               //StockCardPf(context: context, title: "AMZN", name: "Amazon", price: 224, onClick: () { navigateToStockCardPf("AMZN"); }),
             ],

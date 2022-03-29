@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stock_sim/screens/portfolio.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class Setting extends StatefulWidget {
@@ -23,12 +24,12 @@ class _SettingState extends State<Setting> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0),
         child: AppBar(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50.0),
                   bottomRight: Radius.circular(0.0))
           ),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(50.0),
                     bottomRight: Radius.circular(0.0)),
@@ -42,7 +43,7 @@ class _SettingState extends State<Setting> {
                 )
             ),
           ),
-          title: Text('SETTING', style: TextStyle(
+          title: const Text('SETTING', style: TextStyle(
             letterSpacing: 2.0,
             fontSize: 32,
           )),
@@ -52,6 +53,30 @@ class _SettingState extends State<Setting> {
       body: Container(
         child: ListView(
           children: [
+            /*_buildContent(
+                title: 'Application Developed by Joshua García',
+                text: 'You can find this app\'s source code by tapping here.',
+                url: 'https://github.com/JoshuaR503/Stock-Market-App'
+            ),
+            Divider(),
+
+            _buildContent(
+                title: 'Built with Flutter',
+                text: 'None of this would have been posible without Flutter, its amazing community and packages.',
+                url: 'https://flutter.dev/'
+            ),
+            Divider(),
+
+
+            Text('APIs used in this app:', style: _kHeadlineStyle),
+            SizedBox(height: 18),
+
+            _buildApisContent(
+              title: 'Financial Modeling Prep API',
+              text: 'The Portfolio & Markets are powered by this API. Tap here to learn more.',
+              url: 'https://financialmodelingprep.com/developer/docs/',
+              icon: FontAwesomeIcons.shapes,
+            ),*/
             Card(
               color: Colors.blue,
               margin: EdgeInsets.all(8.0),
@@ -81,18 +106,112 @@ class _SettingState extends State<Setting> {
                 ),
               ),
             ),
+            Card(
+              color: Colors.blue,
+              margin: EdgeInsets.all(8.0),
+              child: InkWell(
+                splashColor: Colors.blue,
+                onTap: () async {
+                  const url = 'https://github.com/Hellman666/stock_app';
+                  if (!await launch(url)) throw 'Could not launch $url';
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SizedBox(
+                    width: 350,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Align(
+                            child: Column(
+                              children: const [
+                                Text('Application Developed by Dominik Borek', style: TextStyle(color: Colors.white, fontSize: 24.0),),
+                                Text('You can find this app\'s source code by tapping here.',style: TextStyle(color: Colors.white, fontSize: 18.0),),
+                              ],
+                            )
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('About User'.toUpperCase(), style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+              child: Text('API used in this app'.toUpperCase(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ),
-            Divider(color: Colors.black, endIndent: 10.0, indent: 10.0, ),
+            Divider(color: Colors.black, endIndent: 10.0, indent: 10.0, height: 2, thickness: 1,),
             Card(
+              color: Colors.blue,
+              margin: EdgeInsets.all(8.0),
+              child: InkWell(
+                splashColor: Colors.blue,
+                onTap: () async {
+                  const url = 'https://www.alphavantage.co/documentation/';
+                  if (!await launch(url)) throw 'Could not launch $url';
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SizedBox(
+                    width: 350,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          children: const [
+                            Text('Alpha Vantage API', style: TextStyle(color: Colors.white, fontSize: 24.0),),
+                            Text('The application is powered by Alpha Vantage API. Tap here to learn more.',style: TextStyle(color: Colors.white, fontSize: 18.0),),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Using technology'.toUpperCase(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            ),
+            Divider(color: Colors.black, endIndent: 10.0, indent: 10.0, height: 2, thickness: 1,),
+            Card(
+              color: Colors.blue,
+              margin: EdgeInsets.all(8.0),
+              child: InkWell(
+                splashColor: Colors.blue,
+                onTap: () async {
+                  const url = 'https://flutter.dev/';
+                  if (!await launch(url)) throw 'Could not launch $url';
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SizedBox(
+                    width: 350,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          children: const [
+                            Text('Flutter', style: TextStyle(color: Colors.white, fontSize: 24.0),),
+                            Text('None of this would have been posible without Flutter, its amazing community and packages.',style: TextStyle(color: Colors.white, fontSize: 18.0),),
+                            Text('For more information about flutter tap here.',style: TextStyle(color: Colors.white, fontSize: 18.0),),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            /*Card(
               color: Colors.blue,
               margin: EdgeInsets.fromLTRB(24.0, 5.0, 24.0, 5.0),
               child: Container(
                   height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text('Name: Test', style: TextStyle(color: Colors.white, fontSize: 24.0),)),
@@ -103,8 +222,8 @@ class _SettingState extends State<Setting> {
               margin: EdgeInsets.fromLTRB(24.0, 5.0, 24.0, 5.0),
               child: Container(
                   height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: async Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text('Surname: Test', style: TextStyle(color: Colors.white, fontSize: 24.0),)),
@@ -121,7 +240,7 @@ class _SettingState extends State<Setting> {
                         alignment: Alignment.centerLeft,
                         child: Text('E-mail: Test@test.com', style: TextStyle(color: Colors.white, fontSize: 24.0),)),
                   )),
-            ),
+            ),*/
             //TODO: načíst hodnoty z mobilu
             //TODO: po zmáčknutí tlačítka vymazat data v telefonu
             Padding(
@@ -150,7 +269,7 @@ class _SettingState extends State<Setting> {
                       ),
                     );
                   },
-                  child: const Text('Restart', style: TextStyle(color: Colors.black, fontSize: 22, letterSpacing: 2,)),
+                  child: const Text('Restart app setting', style: TextStyle(color: Colors.black, fontSize: 22, letterSpacing: 2,)),
                 ),
               ),
             ),

@@ -4,10 +4,13 @@ import 'package:stock_sim/screens/orders.dart';
 import 'package:stock_sim/screens/portfolio.dart';
 import 'package:stock_sim/services/alphavantage_repo.dart';
 import 'package:stock_sim/services/sqlite_db.dart';
+import 'package:stock_sim/widgets/buttons/stock_info.dart';
 import 'package:stock_sim/widgets/stock_card.dart';
 import 'package:http/http.dart' as http;
 
 class Stocks extends StatefulWidget {
+  StockInfo get title => StockInfo();
+
 
   @override
   _StocksState createState() => _StocksState();
@@ -172,11 +175,11 @@ class _StocksState extends State<Stocks> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                      child: Text('$_balance' + ' \$', style: Theme.of(context).textTheme.headline2,)
+                      child: Text('$_balance \$', style: Theme.of(context).textTheme.headline2,)
                   ),
                 ),
                 _searchBox(context),
-                Groups(),
+                //Groups(),
                 _loading
                     ? CircularProgressIndicator()
                     : Column(
@@ -249,13 +252,12 @@ class _StocksState extends State<Stocks> {
       ),
     );
   }
-
   StockCard _createStockCard(Map<String, dynamic> data){
-    return StockCard(context: context, title: data["1. symbol"], name: data["2. name"], price: 148.69);
+    return StockCard(context: context, title: data["1. symbol"], name: data["2. name"], /*price: '${data["4. close"]}'*/);
   }
 }
 
-class Groups extends StatelessWidget {
+/*class Groups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -294,4 +296,4 @@ class Groups extends StatelessWidget {
       ],
     );
   }
-}
+}*/

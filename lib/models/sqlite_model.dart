@@ -1,17 +1,15 @@
 class Favourite{
-  int id;
+  int? id;
   String symbol;
-  String name;
 
-  Favourite({required this.id, required this.symbol, required this.name});
+  Favourite({this.id, required this.symbol});
 
   Favourite.fromMap(Map<String, dynamic> res)
       : id = res["id"],
-        symbol = res["symbol"],
-        name = res["name"];
+        symbol = res["symbol"];
 
   Map<String, Object?> toMap(){
-    return {'id': id, 'symbol': symbol, 'name': name};
+    return {'id': id, 'symbol': symbol};
   }
 }
 

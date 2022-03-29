@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:stock_sim/models/sqlite_model.dart';
 
 class DatabaseHelper{
-  static const _databaseName = "storage1.db";
-  static const _databaseVersion = 3;
+  static const _databaseName = "storage2.db";
+  static const _databaseVersion = 1;
 
   static const table = 'storage';
   static const table2 = 'history';
@@ -25,8 +24,8 @@ class DatabaseHelper{
 
   static const favouriteId = 'id';
   static const favouriteSymbol = 'symbol';
-  static const favouriteName = 'name';
 
+  DatabaseHelper(): super();
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -52,7 +51,7 @@ class DatabaseHelper{
 
     await db.execute(
       '''
-      CREATE TABLE IF NOT EXISTS $table(
+      CREATE TABLE $table (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
         $columnBalance INTEGER NOT NULL,
         $columnProfit INTEGER NOT NULL
@@ -62,7 +61,7 @@ class DatabaseHelper{
 
     await db.execute(
       '''
-      CREATE TABLE IF NOT EXISTS $table2(
+      CREATE TABLE $table2 (
         $historyId INTEGER PRIMARY KEY AUTOINCREMENT,
         $historySymbol TEXT NOT NULL,
         $historyName TEXT NOT NULL,
@@ -73,10 +72,9 @@ class DatabaseHelper{
 
     await db.execute(
       '''
-      CREATE TABLE IF NOT EXISTS $table3(
+      CREATE TABLE $table3 (
         $favouriteId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $favouriteSymbol TEXT NOT NULL,
-        $favouriteName TEXT NOT NULL
+        $favouriteSymbol TEXT NOT NULL
       )
       '''
     );
@@ -127,7 +125,7 @@ class DatabaseHelper{
   }
 
   static Future<void> insertFavourite() async {
-    Favourite _favourite = Favourite(id: 1, symbol: 'GOOG', name: 'Google');
+    Favourite _favourite = Favourite(id: 1, symbol: 'GOOG');
     final db = await instance.database;
     await db!.insert(
         table3,
@@ -153,6 +151,12 @@ class DatabaseHelper{
       whereArgs: [id],
     );
   }
+
+  /*Future<int> insertFavourite(Favourite favourite) async {
+    Database? db = await instance.database;
+    int result = await db!.insert(table3, favourite.toMap());
+    return result;
+  }*/
 }
 
 

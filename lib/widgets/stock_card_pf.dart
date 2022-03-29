@@ -58,10 +58,9 @@ class StockCardPf extends StatelessWidget {
           ),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                    color: price > 150 ? HexColor("#00FF00") : Colors.red,
-                    //color: Colors.blue,
+                    color: Colors.blue,
                     spreadRadius: 2,
                     blurRadius: 8,
                     offset: const Offset(4, 5)

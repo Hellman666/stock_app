@@ -194,12 +194,13 @@ class _OrdersState extends State<Orders> {
               ),
 
               Text('My porfolio', style: Theme.of(context).textTheme.headline5,),
-              const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20,),
-              OpenStockCard(context: context, title: 'Microsoft', name: 'MSFT', price: 2487, percent: '124'),
+              const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20, thickness: 2,),
+              const Text('This cards are preparing for you',style: TextStyle(fontSize: 28),),
+              //OpenStockCard(context: context, title: 'Microsoft', name: 'MSFT', price: 2487, percent: '124'),
               //OpenStockCard(context: context, title: 'Tesla', name: 'TSLA', price: 487, percent: '12'),
               SizedBox(height: height*0.05,),
               Text('Order history', style: Theme.of(context).textTheme.headline5,),
-              const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20,),
+              const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20, thickness: 2,),
               /*TextField(
                   controller: textController,
                 ),
@@ -224,11 +225,13 @@ class _OrdersState extends State<Orders> {
                     );
                   }),
                   */
-              CloseStockCard(context: context, title: 'APPL', name: 'Apple', price: 124),
+              const Text('This cards are preparing for you',style: TextStyle(fontSize: 28),),
+              //---------------------------------------------------------------------------
+              /*CloseStockCard(context: context, title: 'APPL', name: 'Apple', price: 124),
               CloseStockCard(context: context, title: 'NTFX', name: 'Netflix', price: 180),
               CloseStockCard(context: context, title: 'FB', name: 'Facebook', price: 24),
               CloseStockCard(context: context, title: 'NVDA', name: 'NVIDIA', price: 75),
-              CloseStockCard(context: context, title: 'AMZN', name: 'Amazon', price: 320),
+              CloseStockCard(context: context, title: 'AMZN', name: 'Amazon', price: 320),*/
             ],
           ),
         ),

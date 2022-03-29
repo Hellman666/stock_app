@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stock_sim/models/api_model.dart';
+import 'package:stock_sim/models/api_model_daily.dart';
+import 'package:stock_sim/models/api_model_minute.dart';
 import 'package:stock_sim/services/alphavantage_repo.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +10,7 @@ import 'package:intl/intl.dart';
 class Chart extends StatefulWidget {
   Chart({Key? key, required this.title}) : super(key: key);
 
-  final String title;
+  final String  title;
 
   @override
   _ChartState createState() => _ChartState();
@@ -18,10 +19,11 @@ class Chart extends StatefulWidget {
 class _ChartState extends State<Chart> {
   late TrackballBehavior _trackballBehavior;
   List<TimeSeriesDaily> timeModelList = [];
-
+  List<TimeSeries60Min> minuteModelList = [];
 
 
   late Future<List> _timeSeriesDaily;
+  late Future<List> _timeSeries60min;
   late double minimum;
   late double maximum;
 
@@ -33,6 +35,7 @@ class _ChartState extends State<Chart> {
     _trackballBehavior = TrackballBehavior(
         enable: true, activationMode: ActivationMode.singleTap);
     _timeSeriesDaily = APIManager().getTime(widget.title);
+    _timeSeries60min = APIManager().getMinute(widget.title);
     super.initState();
   }
 
@@ -41,34 +44,34 @@ class _ChartState extends State<Chart> {
     return SafeArea(
         child: Scaffold(
             body: FutureBuilder(
-              future: _timeSeriesDaily,
+              future: _timeSeries60min,
               builder: (context, AsyncSnapshot<List> snapshot) {
                 if(snapshot.hasData){
                   List<ChartSampleData> _chartData = getCustomChartData(snapshot.data!);
                   return SfCartesianChart(
-                    title: ChartTitle(text: widget.title),
-                    trackballBehavior: _trackballBehavior,
-                    series: [
-                      CandleSeries<ChartSampleData, DateTime>(
-                        dataSource: _chartData,
-                        xValueMapper: (ChartSampleData sales, _) => sales.x,
-                        lowValueMapper: (ChartSampleData sales, _) => sales.low,
-                        highValueMapper: (ChartSampleData sales, _) => sales.high,
-                        openValueMapper: (ChartSampleData sales, _) => sales.open,
-                        closeValueMapper: (ChartSampleData sales, _) => sales.close,
-                        enableSolidCandles: true,
+                      title: ChartTitle(text: widget.title),
+                      trackballBehavior: _trackballBehavior,
+                      series: [
+                        CandleSeries<ChartSampleData, DateTime>(
+                          dataSource: _chartData,
+                          xValueMapper: (ChartSampleData sales, _) => sales.x,
+                          lowValueMapper: (ChartSampleData sales, _) => sales.low,
+                          highValueMapper: (ChartSampleData sales, _) => sales.high,
+                          openValueMapper: (ChartSampleData sales, _) => sales.open,
+                          closeValueMapper: (ChartSampleData sales, _) => sales.close,
+                          enableSolidCandles: true,
 
-                      ),
-                    ],
-                    primaryXAxis: DateTimeAxis(
-                        dateFormat: DateFormat.MMM(),
-                        majorGridLines: MajorGridLines(width: 0)),
-                    primaryYAxis: NumericAxis(
-                        minimum: minimum - 0.2,
-                        maximum: maximum + 0.2,
-                        interval: 0.1,
-                        numberFormat: NumberFormat.simpleCurrency(decimalDigits: 0)),
-                  );
+                        ),
+                      ],
+                      primaryXAxis: DateTimeAxis(
+                          dateFormat: DateFormat.Hm(),
+                          majorGridLines: MajorGridLines(width: 0)),
+                      primaryYAxis: NumericAxis(
+                          minimum: minimum - 0.2,
+                          maximum: maximum + 0.2,
+                          interval: 0.1,
+                          numberFormat: NumberFormat.simpleCurrency(decimalDigits: 0)),
+                    );
                 }
                 else{
                   return Center(child: CircularProgressIndicator());
@@ -94,25 +97,6 @@ class _ChartState extends State<Chart> {
         ),
       );
     }
-    /*data.forEach((e){
-
-
-    e.value.forEach((k,v){
-      print('KEY: $k');
-      print('VALUE: $v');
-      resultList.add(
-        ChartSampleData(
-            x: DateTime.parse(e.toString()),
-            open: 98.97,
-            high: 101.19,
-            low: 95.36,
-            close: 97.13
-        ),
-      );
-    });
-
-  });*/
-
     return resultList;
   }
 }
