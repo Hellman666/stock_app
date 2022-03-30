@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:stock_sim/models/sqlite_model.dart';
 import 'package:stock_sim/services/sqlite_db.dart';
 import 'package:stock_sim/widgets/about_stock.dart';
-import 'package:stock_sim/widgets/buttons/action_button.dart';
+import 'package:stock_sim/widgets/buttons/buy_action_button.dart';
+import 'package:stock_sim/widgets/buttons/sell_action_button.dart';
 import 'package:stock_sim/widgets/buttons/stock_info.dart';
 import 'package:stock_sim/widgets/chart.dart';
 
@@ -50,6 +51,7 @@ class _StockState extends State<Stock> {
                   });
                   print('zmáčknuto');
                   if(isFavourite == false){
+                    DatabaseHelper.insertFavourite(widget.stockSymbol);
                     isFavourite = true;
                     addToFavourite(widget.stockSymbol);
                     icon: const Icon(
@@ -105,14 +107,15 @@ class _StockState extends State<Stock> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ActionButton(
+                    BuyActionButton(
                       context: context,
                       name: "Buy",
                       color: "#32CD32",
                       icon: Icons.shopping_cart_outlined,
                       Print: "Buy",
+                      symbol: widget.stockSymbol,
                     ),
-                    ActionButton(
+                    SellActionButton(
                       context: context,
                       name: "Sell",
                       color: "FF0000",
@@ -126,7 +129,7 @@ class _StockState extends State<Stock> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    StockInfo()
+                    StockInfo(title: widget.stockSymbol,)
                   ],
                 ),
               ),

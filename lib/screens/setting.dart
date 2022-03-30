@@ -53,30 +53,6 @@ class _SettingState extends State<Setting> {
       body: Container(
         child: ListView(
           children: [
-            /*_buildContent(
-                title: 'Application Developed by Joshua García',
-                text: 'You can find this app\'s source code by tapping here.',
-                url: 'https://github.com/JoshuaR503/Stock-Market-App'
-            ),
-            Divider(),
-
-            _buildContent(
-                title: 'Built with Flutter',
-                text: 'None of this would have been posible without Flutter, its amazing community and packages.',
-                url: 'https://flutter.dev/'
-            ),
-            Divider(),
-
-
-            Text('APIs used in this app:', style: _kHeadlineStyle),
-            SizedBox(height: 18),
-
-            _buildApisContent(
-              title: 'Financial Modeling Prep API',
-              text: 'The Portfolio & Markets are powered by this API. Tap here to learn more.',
-              url: 'https://financialmodelingprep.com/developer/docs/',
-              icon: FontAwesomeIcons.shapes,
-            ),*/
             Card(
               color: Colors.blue,
               margin: EdgeInsets.all(8.0),

@@ -8,9 +8,9 @@ class OpenStockCard extends StatelessWidget {
   final String title;
   final String name;
   final price;
-  final String percent;
+  final String symbol;
 
-  OpenStockCard({required this.context, required this.title, required this.name, required this.price, required this.percent});
+  OpenStockCard({required this.context, required this.title, required this.name, required this.price, required this.symbol});
 
   get _height => MediaQuery.of(context).size.height;
   get width => MediaQuery.of(context).size.width;
@@ -46,14 +46,14 @@ class OpenStockCard extends StatelessWidget {
                         Animation<double> animation,
                         Animation<double> secAnimation,)
                     {
-                      return Stock(stockSymbol: 'TSLA');
+                      return Stock(stockSymbol: symbol);
                     }
                 ),
                 );
               },
               child: SizedBox(
                 width: width*0.9,
-                height: _height*0.19,
+                height: _height*0.15,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -77,25 +77,7 @@ class OpenStockCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(price > 100 ? "+ " + '$price' + " \$" : "- " + '$price' + " \$", style: TextStyle(fontSize: 32),),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              color: Colors.lightBlueAccent,
-                            ),
-                            height: 30,
-                            width: 70,
-                            child: RichText(
-                              text: TextSpan(
-                                  children: [
-                                    const WidgetSpan(
-                                        child: Icon(Icons.arrow_drop_up, color: Colors.white,)
-                                    ),
-                                    TextSpan(text: percent + " %"),
-                                  ]
-                              ),
-                            ),
-                          ),
+                          Text("$price \$", style: TextStyle(fontSize: 32),),
                         ],
                       ),
                     )

@@ -19,11 +19,11 @@ class Chart extends StatefulWidget {
 class _ChartState extends State<Chart> {
   late TrackballBehavior _trackballBehavior;
   List<TimeSeriesDaily> timeModelList = [];
-  List<TimeSeries60Min> minuteModelList = [];
+  List<TimeSeries15Min> minuteModelList = [];
 
 
   late Future<List> _timeSeriesDaily;
-  late Future<List> _timeSeries60min;
+  late Future<List> _timeSeries30min;
   late double minimum;
   late double maximum;
 
@@ -35,7 +35,7 @@ class _ChartState extends State<Chart> {
     _trackballBehavior = TrackballBehavior(
         enable: true, activationMode: ActivationMode.singleTap);
     _timeSeriesDaily = APIManager().getTime(widget.title);
-    _timeSeries60min = APIManager().getMinute(widget.title);
+    _timeSeries30min = APIManager().getMinute(widget.title);
     super.initState();
   }
 
@@ -44,7 +44,7 @@ class _ChartState extends State<Chart> {
     return SafeArea(
         child: Scaffold(
             body: FutureBuilder(
-              future: _timeSeries60min,
+              future: _timeSeries30min,
               builder: (context, AsyncSnapshot<List> snapshot) {
                 if(snapshot.hasData){
                   List<ChartSampleData> _chartData = getCustomChartData(snapshot.data!);
@@ -64,6 +64,7 @@ class _ChartState extends State<Chart> {
                         ),
                       ],
                       primaryXAxis: DateTimeAxis(
+                          //dateFormat: DateFormat('MM/dd HH:mm  '),
                           dateFormat: DateFormat.Hm(),
                           majorGridLines: MajorGridLines(width: 0)),
                       primaryYAxis: NumericAxis(

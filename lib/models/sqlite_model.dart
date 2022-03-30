@@ -48,3 +48,24 @@ class User{
     return {'id': id, 'balance': balance, 'profit': profit};
   }
 }
+
+class Order{
+  final int? id;
+  final int buyPrice;
+  final String symbol;
+
+  Order({
+    this.id,
+    required this.buyPrice,
+    required this.symbol
+  });
+
+  Order.fromMap(Map<String, dynamic> res)
+    : id = res['id'],
+      buyPrice = res['buyPrice'],
+      symbol = res['symbol'];
+
+  Map<String, Object?> toMap(){
+    return {'id': id, 'buyPrice': buyPrice, 'symbol': symbol};
+  }
+}

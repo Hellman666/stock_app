@@ -9,8 +9,6 @@ import 'package:stock_sim/widgets/stock_card.dart';
 import 'package:http/http.dart' as http;
 
 class Stocks extends StatefulWidget {
-  StockInfo get title => StockInfo();
-
 
   @override
   _StocksState createState() => _StocksState();
@@ -19,24 +17,29 @@ class Stocks extends StatefulWidget {
 class _StocksState extends State<Stocks> {
 
 
-
-  //bool _isSigningOut = false;
-
-  late int _balance;
   int _selectedIndex = 1;
 
   final _searchController = TextEditingController();
   final APIManager _searchManager = APIManager();
 
+  Future<List<Map<String, dynamic>>>? _balance;
+
   @override
   void initState() {
-    DatabaseHelper.getBalance().then((value) {
+    DatabaseHelper.getBalance();
+    _balance = _getBalance();
+    /*DatabaseHelper.getBalance().then((value) {
       User _userRow = User.fromMap(value[0]);
       setState(() {
         _balance = _userRow.balance;
       });
-    });
+    });*/
     super.initState();
+  }
+
+  Future<List<Map<String, dynamic>>> _getBalance() async{
+    List<Map<String, dynamic>> _balance = await DatabaseHelper.getBalance();
+    return _balance;
   }
 
   void _onItemTapped(int index) {
@@ -174,9 +177,43 @@ class _StocksState extends State<Stocks> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                      child: Text('$_balance \$', style: Theme.of(context).textTheme.headline2,)
+                  child:
+                  FutureBuilder<List<Map<String, dynamic>>>(
+                    future: _balance,
+                    builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                      List<Widget> children;
+                      if (snapshot.hasData) {
+                        children = snapshot.data!.map((balance) {
+                          return Center(child: Text('${balance['balance']} \$', style: Theme.of(context).textTheme.headline2,));
+                        }).toList();
+                      } else if (snapshot.hasError) {
+                        children = <Widget>[
+                          Text(snapshot.error.toString())
+                        ];
+                      } else {
+                        children = const <Widget>[
+                          SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 16),
+                            child: Text('Nothing in watch list', style: TextStyle(fontSize: 22, color: Colors.black),),
+                          )
+                        ];
+                      }
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: children,
+                        ),
+                      );
+                    },
                   ),
+                  /*Center(
+                      child: Text('$_balance \$', style: Theme.of(context).textTheme.headline2,)
+                  ),*/
                 ),
                 _searchBox(context),
                 //Groups(),
@@ -253,7 +290,7 @@ class _StocksState extends State<Stocks> {
     );
   }
   StockCard _createStockCard(Map<String, dynamic> data){
-    return StockCard(context: context, title: data["1. symbol"], name: data["2. name"], /*price: '${data["4. close"]}'*/);
+    return StockCard(context: context, title: data["1. symbol"], name: data["2. name"],);
   }
 }
 

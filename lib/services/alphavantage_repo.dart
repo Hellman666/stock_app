@@ -7,16 +7,16 @@ class APIManager {
 
   Future<List> getMinute(String symbol) async{
     var client = http.Client();
-    var timeSeries60min;
+    var timeSeries15min;
     List timeSeriesList = [];
 
     try{
       var response = await client.get(Uri.parse(
-          'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=60min&apikey=$apikey'));
+          'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=15min&apikey=$apikey'));
       if (response.statusCode == 200) {
         var jsonString = response.body;
         var jsonMap = json.decode(jsonString);
-        var timeSeries = jsonMap["Time Series (60min)"];
+        var timeSeries = jsonMap["Time Series (15min)"];
         timeSeries.entries.forEach((e){
           timeSeriesList.add(e);
         });
@@ -25,9 +25,9 @@ class APIManager {
     }
     catch(e) {
       print('error $e');
-      return timeSeries60min;
+      return timeSeries15min;
     }
-    return timeSeries60min;
+    return timeSeries15min;
   }
 
   Future<List> getTime(String symbol) async {
@@ -65,7 +65,7 @@ class APIManager {
     var client = http.Client();
     try {
       var response = await client.get(Uri.parse(
-          'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=TSLA&apikey=$apikey'));
+          'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$symbol&apikey=$apikey'));
       if (response.statusCode == 200) {
         var jsonString = response.body;
         var data = json.decode(jsonString);

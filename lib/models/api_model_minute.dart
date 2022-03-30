@@ -7,20 +7,20 @@ String welcomeToJson(Welcome data) => json.encode(data.toJson());
 class Welcome {
   Welcome({
     required this.metaData,
-    required this.timeSeries60Min,
+    required this.timeSeries15Min,
   });
 
   MetaData metaData;
-  Map<String, TimeSeries60Min> timeSeries60Min;
+  Map<String, TimeSeries15Min> timeSeries15Min;
 
   factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
     metaData: MetaData.fromJson(json["Meta Data"]),
-    timeSeries60Min: Map.from(json["Time Series (60min)"]).map((k, v) => MapEntry<String, TimeSeries60Min>(k, TimeSeries60Min.fromJson(v))),
+    timeSeries15Min: Map.from(json["Time Series (15min)"]).map((k, v) => MapEntry<String, TimeSeries15Min>(k, TimeSeries15Min.fromJson(v))),
   );
 
   Map<String, dynamic> toJson() => {
     "Meta Data": metaData.toJson(),
-    "Time Series (60min)": Map.from(timeSeries60Min).map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+    "Time Series (15min)": Map.from(timeSeries15Min).map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
   };
 }
 
@@ -60,8 +60,8 @@ class MetaData {
   };
 }
 
-class TimeSeries60Min {
-  TimeSeries60Min({
+class TimeSeries15Min {
+  TimeSeries15Min({
     required this.the1Open,
     required this.the2High,
     required this.the3Low,
@@ -75,7 +75,7 @@ class TimeSeries60Min {
   String the4Close;
   String the5Volume;
 
-  factory TimeSeries60Min.fromJson(Map<String, dynamic> json) => TimeSeries60Min(
+  factory TimeSeries15Min.fromJson(Map<String, dynamic> json) => TimeSeries15Min(
     the1Open: json["1. open"],
     the2High: json["2. high"],
     the3Low: json["3. low"],

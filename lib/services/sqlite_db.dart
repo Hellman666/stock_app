@@ -6,12 +6,13 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:stock_sim/models/sqlite_model.dart';
 
 class DatabaseHelper{
-  static const _databaseName = "storage2.db";
-  static const _databaseVersion = 1;
+  static const _databaseName = "storage.db";
+  static const _databaseVersion = 2;
 
   static const table = 'storage';
   static const table2 = 'history';
   static const table3 = 'favourite';
+  static const table4 = 'trades';
 
   static const columnId = 'id';
   static const columnBalance ='balance';
@@ -24,6 +25,10 @@ class DatabaseHelper{
 
   static const favouriteId = 'id';
   static const favouriteSymbol = 'symbol';
+
+  static const orderId = 'id';
+  static const buyPrice = 'buyPrice';
+  static const orderSymbol = 'symbol';
 
   DatabaseHelper(): super();
 
@@ -63,9 +68,9 @@ class DatabaseHelper{
       '''
       CREATE TABLE $table2 (
         $historyId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $historySymbol TEXT NOT NULL,
-        $historyName TEXT NOT NULL,
-        $historyPrice INTEGER NOT NULL
+        $historySymbol TEXT,
+        $historyName TEXT,
+        $historyPrice INTEGER
       )
       '''
     );
@@ -74,14 +79,24 @@ class DatabaseHelper{
       '''
       CREATE TABLE $table3 (
         $favouriteId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $favouriteSymbol TEXT NOT NULL
+        $favouriteSymbol TEXT
+      )
+      '''
+    );
+
+    await db.execute(
+      '''
+      CREATE TABLE $table4 (
+        $orderId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $buyPrice INTEGER,
+        $orderSymbol TEXT
       )
       '''
     );
   }
 
   static Future<void> insertUserRow() async {
-    User _user = User(1, 50000, 0);
+    User _user = User(1, 10000, 0);
     final db = await instance.database;
     await db!.insert(
       table,
@@ -106,6 +121,39 @@ class DatabaseHelper{
     return res;
   }
 
+  static Future<void> insertTrades(String symbol, int price) async{
+    Order _order = Order(buyPrice: price, symbol: symbol);
+    final db = await instance.database;
+    await db!.insert(
+      table4,
+      _order.toMap(),
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getTrades() async {
+    Database? db = await instance.database;
+    List<Map<String, dynamic>> res = await db!.query(table4);
+    //print(res);
+    return res;
+  }
+
+  static Future<void> insertFavourite(String symbol) async{
+    Favourite _favourite = Favourite(symbol: symbol);
+    final db = await instance.database;
+    await db!.insert(
+      table3,
+      _favourite.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getFavourite() async {
+    Database? db = await instance.database;
+    List<Map<String, dynamic>> res = await db!.query(table3);
+    //print(res);
+    return res;
+  }
+/*
   static Future<void> insertHistoryRow() async {
     History _history = History(id: 1, symbol: 'AAPL', name: 'Apple', price: 120);
     final db = await instance.database;
@@ -157,6 +205,7 @@ class DatabaseHelper{
     int result = await db!.insert(table3, favourite.toMap());
     return result;
   }*/
+  */
 }
 
 

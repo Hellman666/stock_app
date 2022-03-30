@@ -7,10 +7,9 @@ class StockCardPf extends StatelessWidget {
   final BuildContext context;
   final String title;
   final String name;
-  final double price;
   final GestureTapCallback onClick;
 
-  StockCardPf({required this.context, required this.title, required this.name, required this.price, required this.onClick});
+  StockCardPf({required this.context, required this.title, required this.name, required this.onClick});
 
   get _height => MediaQuery.of(context).size.height;
   get width => MediaQuery.of(context).size.width;
@@ -47,10 +46,6 @@ class StockCardPf extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
-                      child: Text("\$" + "$price", style: TextStyle(fontSize: 32),),
-                    )
                   ],
                 ),
               ),

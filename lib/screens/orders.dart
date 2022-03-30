@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:stock_sim/screens/portfolio.dart';
 import 'package:stock_sim/screens/stocks.dart';
 import 'package:stock_sim/services/sqlite_db.dart';
-import 'package:stock_sim/widgets/close.dart';
 import 'package:stock_sim/widgets/open.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Orders extends StatefulWidget {
+  const Orders({Key? key}) : super(key: key);
+
 
   @override
   _OrdersState createState() => _OrdersState();
@@ -15,18 +16,15 @@ class Orders extends StatefulWidget {
 class _OrdersState extends State<Orders> {
   final textController = TextEditingController();
   int _selectedIndex = 1;
-  //late User _currentUser;
-  //bool _isSigningOut = false;
 
   void _onItemTapped(int index) {
     setState(() {
-      //print(_selectedIndex);
       _selectedIndex = index;
       print(index);
       switch(index){
         case 0:
           Navigator.pushReplacement(context, PageRouteBuilder(
-              transitionDuration: Duration(seconds: 1),
+              transitionDuration: const Duration(seconds: 1),
               transitionsBuilder: (BuildContext context,
                   Animation<double> animation,
                   Animation<double> secAnimation,
@@ -51,7 +49,7 @@ class _OrdersState extends State<Orders> {
           break;
         case 1:
           Navigator.pushReplacement(context, PageRouteBuilder(
-              transitionDuration: Duration(seconds: 1),
+              transitionDuration: const Duration(seconds: 1),
               transitionsBuilder: (BuildContext context,
                   Animation<double> animation,
                   Animation<double> secAnimation,
@@ -69,7 +67,7 @@ class _OrdersState extends State<Orders> {
                   Animation<double> animation,
                   Animation<double> secAnimation,)
               {
-                return Portfolio();
+                return const Portfolio();
               }
           ),
           );
@@ -94,7 +92,7 @@ class _OrdersState extends State<Orders> {
                   Animation<double> animation,
                   Animation<double> secAnimation,)
               {
-                return Orders();
+                return const Orders();
               }
           ),
           );
@@ -104,19 +102,24 @@ class _OrdersState extends State<Orders> {
   }
 
   late List<GDPData> _chartData;
-
+  Future<List<Map<String, dynamic>>>? _trades;
   @override
   void initState(){
-    _chartData = getChartData();
-
     super.initState();
+    _trades = _getTrades();
+    _chartData = getChartData();
+  }
+
+  Future<List<Map<String, dynamic>>> _getTrades() async{
+    List<Map<String, dynamic>> _trades = await DatabaseHelper.getTrades();
+    return _trades;
   }
 
   @override
   Widget build(BuildContext context) {
 
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    //double width = MediaQuery.of(context).size.width;
 
 
 
@@ -125,30 +128,8 @@ class _OrdersState extends State<Orders> {
       //extendBodyBehindAppBar: true,
       appBar: //MyAppBar();
       PreferredSize(
-        preferredSize: Size.fromHeight(70.0),
+        preferredSize: const Size.fromHeight(70.0),
         child: AppBar(
-          /*actions: [
-              IconButton(
-                onPressed: () async {
-                  setState(() {
-                    _isSigningOut = true;
-                  });
-                  await FirebaseAuth.instance.signOut();
-                  setState(() {
-                    _isSigningOut = false;
-                  });
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => Welcome(),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.logout,
-                  color: Colors.white,
-                ),
-              ),
-            ],*/
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50.0),
                   bottomRight: Radius.circular(0.0))
@@ -195,9 +176,40 @@ class _OrdersState extends State<Orders> {
 
               Text('My porfolio', style: Theme.of(context).textTheme.headline5,),
               const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20, thickness: 2,),
-              const Text('This cards are preparing for you',style: TextStyle(fontSize: 28),),
-              //OpenStockCard(context: context, title: 'Microsoft', name: 'MSFT', price: 2487, percent: '124'),
-              //OpenStockCard(context: context, title: 'Tesla', name: 'TSLA', price: 487, percent: '12'),
+              //const Text('No open trades',style: TextStyle(fontSize: 28),),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: _trades,
+                builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                  List<Widget> children;
+                  if (snapshot.hasData) {
+                    children = snapshot.data!.map((order) {
+                      return OpenStockCard(context: context, title: 'Název', name: order["symbol"], price: order["buyPrice"], symbol: order['symbol'],);
+                    }).toList();
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      Text(snapshot.error.toString())
+                    ];
+                  } else {
+                    children = const <Widget>[
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Text('No open trades'),
+                      )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
+                },
+              ),
               SizedBox(height: height*0.05,),
               Text('Order history', style: Theme.of(context).textTheme.headline5,),
               const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20, thickness: 2,),
@@ -225,7 +237,7 @@ class _OrdersState extends State<Orders> {
                     );
                   }),
                   */
-              const Text('This cards are preparing for you',style: TextStyle(fontSize: 28),),
+              const Text('Nothing in history',style: TextStyle(fontSize: 28),),
               //---------------------------------------------------------------------------
               /*CloseStockCard(context: context, title: 'APPL', name: 'Apple', price: 124),
               CloseStockCard(context: context, title: 'NTFX', name: 'Netflix', price: 180),
@@ -236,18 +248,6 @@ class _OrdersState extends State<Orders> {
           ),
         ),
       ),
-      /*floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.upload_rounded),
-        onPressed: () async {
-          await DatabaseHelper.instance.add(
-            History(title: textController.text),
-          );
-          setState((){
-            textController.clear();
-          });
-          print(textController.text);
-        },
-      ),*/
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.blue,
@@ -279,7 +279,7 @@ class _OrdersState extends State<Orders> {
 
   List<GDPData> getChartData() {
     final List<GDPData> chartData = [
-      GDPData('TSLA', 2487),
+      GDPData('order', 2487),
       GDPData('MSFT', 487),
       GDPData('FB', 180),
       GDPData('AMZN', 320),
