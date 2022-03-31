@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stock_sim/screens/portfolio.dart';
+import 'package:stock_sim/services/sqlite_db.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -53,7 +54,7 @@ class _SettingState extends State<Setting> {
       body: Container(
         child: ListView(
           children: [
-            Card(
+            /*Card(
               color: Colors.blue,
               margin: EdgeInsets.all(8.0),
               child: InkWell(
@@ -81,6 +82,10 @@ class _SettingState extends State<Setting> {
                   ),
                 ),
               ),
+            ),*/
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Image.asset('lib/assets/icon/icon.png', height: 200,),
             ),
             Card(
               color: Colors.blue,
@@ -228,15 +233,16 @@ class _SettingState extends State<Setting> {
                 child: OutlineButton(
                   highlightedBorderColor: Colors.blueAccent,
                   splashColor: Colors.lightBlue,
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     width: 1.8,
                     style: BorderStyle.solid,
                     color: Colors.blue,
                   ),
-                  shape: new RoundedRectangleBorder(
+                  shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)
                   ),
                   onPressed: () async {
+                    DatabaseHelper.insertUserRow();
                     Navigator.of(context)
                         .pushReplacement(
                       MaterialPageRoute(
@@ -245,7 +251,7 @@ class _SettingState extends State<Setting> {
                       ),
                     );
                   },
-                  child: const Text('Restart app setting', style: TextStyle(color: Colors.black, fontSize: 22, letterSpacing: 2,)),
+                  child: const Text('Reset balance', style: TextStyle(color: Colors.black, fontSize: 22, letterSpacing: 2,)),
                 ),
               ),
             ),

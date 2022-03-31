@@ -7,6 +7,8 @@ import 'package:stock_sim/screens/stock.dart';
 import 'package:stock_sim/services/alphavantage_repo.dart';
 import 'package:stock_sim/services/sqlite_db.dart';
 
+import '../open.dart';
+
 
 class SellActionButton extends StatefulWidget {
   final BuildContext context;
@@ -14,8 +16,9 @@ class SellActionButton extends StatefulWidget {
   final String color;
   final icon;
   final String Print;
+  final int? id;
 
-  SellActionButton({required this.context, required this.name, required this.color, this.icon, required this.Print});
+  SellActionButton({required this.context, required this.name, required this.color, this.icon, required this.Print, required this.id});
 
   @override
   State<SellActionButton> createState() => _SellActionButtonState();
@@ -27,16 +30,34 @@ class _SellActionButtonState extends State<SellActionButton> {
 
   @override
   void initState() {
+
+    DatabaseHelper.getTrades().then((value) {
+      Order _orderRow = Order.fromMap(value[0]);
+      setState(() {
+        _price = _orderRow.buyPrice;
+        _historySymbol = _orderRow.symbol;
+        _historyName = _orderRow.name;
+      });
+      print(_price);
+    });
+
     DatabaseHelper.getBalance().then((value) {
       User _userRow = User.fromMap(value[0]);
       setState(() {
         _balance = _userRow.balance;
+        _profit = _userRow.profit;
       });
     });
     super.initState();
   }
 
+  late String _historySymbol;
+  late String _historyName;
+  late int _historyPrice;
+  int? _profit;
+  int? _price;
   int? _balance;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -57,40 +78,45 @@ class _SellActionButtonState extends State<SellActionButton> {
               onPrimary: Colors.white,
             ),
             onPressed: () {
-              //TODO: udělat podmínku pro pordej
-              /*if(symbol = order.symbol/*(symbol v databázi)*/){
-                actualPrice - buyPrice = profit;
-                _balance = _balance + profit + buyprice
-                //TODO: odstanění prodané akcie z databáze
-              } else {
-                showDialog(
-                  context: context,
+              showDialog(
+                  context: context, 
                   builder: (context) => AlertDialog(
-                    title: const Text('You cannot sell the stock'),
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: const <Widget>[
-                          Text('You can\'t sell a stock because you haven\' bought it'),
-                        ],
-                      ),
-                    ),
+                    title: const Text('You sell a stock'),
+                    content: Text('At the moment you sell a stock ${widget.name}'),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context, 'OK'),
+                        onPressed: (){
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Portfolio(),
+                            ),
+                            (Route<dynamic> route) => false,
+                          );
+                        },
                         child: const Text('OK'),
-                      ),
+                      )
                     ],
-                  ),
-                );
-              }*/
+                  )
+              );
 
               double stockPrice = double.parse(APIManager.price);
               int actualPrice = stockPrice.round();
 
-              print('$actualPrice - předchozí cena = profit');
-              print('profit + předchozí cena + balance');
+              print(_price);
+              int profit = actualPrice - _price!;
+              int finishProfit = profit + _profit!;
+              print('Profit: $profit');
+              int newPrice = _price! + profit + _balance!;
+              print('New price: $newPrice');
 
-              DatabaseHelper.getTrades();
+              DatabaseHelper.updateBalance(User(id: 1, balance: newPrice, profit: finishProfit));
+              DatabaseHelper.sellTrades(widget.id);
+
+
+              DatabaseHelper.insertHistory(_historySymbol, _historyName, finishProfit);
+
+              print('selled');
             },
             label: Text(widget.name),
             //child: Text(name),

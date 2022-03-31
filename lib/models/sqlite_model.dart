@@ -1,25 +1,27 @@
 class Favourite{
   int? id;
   String symbol;
+  String name;
 
-  Favourite({this.id, required this.symbol});
+  Favourite({this.id, required this.symbol, required this.name});
 
   Favourite.fromMap(Map<String, dynamic> res)
       : id = res["id"],
-        symbol = res["symbol"];
+        symbol = res["symbol"],
+        name = res["name"];
 
   Map<String, Object?> toMap(){
-    return {'id': id, 'symbol': symbol};
+    return {'id': id, 'symbol': symbol, 'name': name};
   }
 }
 
 class History{
-  int id;
+  int? id;
   String symbol;
   String name;
   int price;
 
-  History({required this.id, required this.symbol, required this.name, required this.price});
+  History({this.id, required this.symbol, required this.name, required this.price});
 
   History.fromMap(Map<String, dynamic> res)
       : id = res["id"],
@@ -33,11 +35,11 @@ class History{
 }
 
 class User{
-  int id;
-  int balance;
-  int profit;
+  int? id;
+  int? balance;
+  int? profit;
 
-  User( this.id,  this.balance, this.profit);
+  User({this.id, this.balance, this.profit});
 
   User.fromMap(Map<String, dynamic> res)
       : id = res["id"],
@@ -53,19 +55,22 @@ class Order{
   final int? id;
   final int buyPrice;
   final String symbol;
+  final String name;
 
   Order({
     this.id,
     required this.buyPrice,
-    required this.symbol
+    required this.symbol,
+    required this.name
   });
 
   Order.fromMap(Map<String, dynamic> res)
     : id = res['id'],
       buyPrice = res['buyPrice'],
-      symbol = res['symbol'];
+      symbol = res['symbol'],
+      name = res['name'];
 
   Map<String, Object?> toMap(){
-    return {'id': id, 'buyPrice': buyPrice, 'symbol': symbol};
+    return {'id': id, 'buyPrice': buyPrice, 'symbol': symbol, 'name': name};
   }
 }

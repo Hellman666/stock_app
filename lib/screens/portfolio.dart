@@ -118,7 +118,7 @@ class _PortfolioState extends State<Portfolio> {
                   Animation<double> animation,
                   Animation<double> secAnimation,)
               {
-                return Orders();
+                return const Orders();
               }
           ),
           );
@@ -130,8 +130,33 @@ class _PortfolioState extends State<Portfolio> {
 
   @override
   void initState() {
+
+    Future.delayed(Duration(seconds: 3), (){
+      if(_balance == null) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Start trading'),
+              content: Text('Are you ready for trading simulator?'),
+              actions: [
+                TextButton(
+                  onPressed: (){
+                    DatabaseHelper.insertUserRow();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => Portfolio(),
+                      ),
+                    );
+                  },
+                  child: const Text('Yes'),
+                )
+              ],
+            )
+        );
+      }
+    });
+
     print('otevřeno');
-    DatabaseHelper. insertUserRow();
     DatabaseHelper.getFavourite();
     DatabaseHelper.getBalance().then((value) {
       User _userRow = User.fromMap(value[0]);
@@ -311,7 +336,7 @@ class _PortfolioState extends State<Portfolio> {
                   List<Widget> children;
                   if (snapshot.hasData) {
                     children = snapshot.data!.map((favourite) {
-                      return StockCardPf(context: context, title: favourite['symbol'], name: 'Amazon', onClick: () { navigateToStockCardPf(favourite['symbol']);});
+                      return StockCardPf(context: context, title: favourite['symbol'], name: favourite['name'], id: favourite['id'], onClick: () { navigateToStockCardPf(favourite['symbol'], favourite['name'], favourite['id']);});
                     }).toList();
                   } else if (snapshot.hasError) {
                     children = <Widget>[
@@ -338,11 +363,6 @@ class _PortfolioState extends State<Portfolio> {
                   );
                 },
               ),
-              //StockCardPf(context: context, title: /*_favouriteSymbol*/'AMZN', name: 'Amazon', onClick: () { navigateToStockCardPf(/*_favouriteSymbol*/'AMZN'); }),
-
-              //StockCardPf(context: context, title: /*_favouriteSymbol*/'AMZN', name: 'Amazon', price: 125, onClick: () { navigateToStockCardPf(/*_favouriteSymbol*/'AMZN'); }),
-              //StockCardPf(context: context, title:  "AAPL", name: "Apple", price: 170, onClick: () { navigateToStockCardPf("AAPL"); }),
-              //StockCardPf(context: context, title: "AMZN", name: "Amazon", price: 224, onClick: () { navigateToStockCardPf("AMZN"); }),
             ],
           ),
         ),
@@ -375,10 +395,10 @@ class _PortfolioState extends State<Portfolio> {
       ),
     );
   }
-  navigateToStockCardPf(title){
+  navigateToStockCardPf(title, name, id){
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Stock(stockSymbol: title)),
+      MaterialPageRoute(builder: (context) => Stock(stockSymbol: title, stockName: name, stockId: id,)),
     ).then((value) => setState(() {print('obnoveno');}));
   }
 }

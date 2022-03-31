@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:stock_sim/models/sqlite_model.dart';
 import 'package:stock_sim/screens/portfolio.dart';
 import 'package:stock_sim/screens/stocks.dart';
 import 'package:stock_sim/services/sqlite_db.dart';
+import 'package:stock_sim/widgets/close.dart';
 import 'package:stock_sim/widgets/open.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Orders extends StatefulWidget {
   const Orders({Key? key}) : super(key: key);
+
 
 
   @override
@@ -103,11 +106,21 @@ class _OrdersState extends State<Orders> {
 
   late List<GDPData> _chartData;
   Future<List<Map<String, dynamic>>>? _trades;
+  Future<List<Map<String, dynamic>>>? _history;
+
   @override
   void initState(){
     super.initState();
     _trades = _getTrades();
+    _history = _getHistory();
     _chartData = getChartData();
+  }
+
+
+
+  Future<List<Map<String, dynamic>>> _getHistory() async{
+    List<Map<String, dynamic>> _history = await DatabaseHelper.getHistory();
+    return _history;
   }
 
   Future<List<Map<String, dynamic>>> _getTrades() async{
@@ -177,13 +190,18 @@ class _OrdersState extends State<Orders> {
               Text('My porfolio', style: Theme.of(context).textTheme.headline5,),
               const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20, thickness: 2,),
               //const Text('No open trades',style: TextStyle(fontSize: 28),),
+
+
+              //Text(trades[0]['id']),
+
+
               FutureBuilder<List<Map<String, dynamic>>>(
                 future: _trades,
                 builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                   List<Widget> children;
                   if (snapshot.hasData) {
                     children = snapshot.data!.map((order) {
-                      return OpenStockCard(context: context, title: 'Název', name: order["symbol"], price: order["buyPrice"], symbol: order['symbol'],);
+                      return OpenStockCard(context: context, title: order['name'], name: order["symbol"], price: order["buyPrice"], symbol: order['symbol'], id: order['id']);
                     }).toList();
                   } else if (snapshot.hasError) {
                     children = <Widget>[
@@ -197,8 +215,8 @@ class _OrdersState extends State<Orders> {
                         child: CircularProgressIndicator(),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 16),
-                        child: Text('No open trades'),
+                        padding: EdgeInsets.only(top: 5),
+                        child: Text('No open trades', style: TextStyle(fontSize: 32, color: Colors.black),),
                       )
                     ];
                   }
@@ -213,34 +231,44 @@ class _OrdersState extends State<Orders> {
               SizedBox(height: height*0.05,),
               Text('Order history', style: Theme.of(context).textTheme.headline5,),
               const Divider(color: Colors.black, height: 40, indent: 20, endIndent: 20, thickness: 2,),
-              /*TextField(
-                  controller: textController,
-                ),
-                FutureBuilder<List<History>>(
-                  future: DatabaseHelper.instance.getHistory(),
-                  builder: (BuildContext context, AsyncSnapshot<List<History>> snapshot){
-                    if(!snapshot.hasData){
-                      return const Center(child: Text('Loading...'));
-                    }
-                    return snapshot.data!.isEmpty
-                        ? const Center(child: Text('No stocks in list'))
-                        :ListView(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: snapshot.data!.map((history) {
-                        return Center(
-                          child: ListTile(
-                            title: Text(history.title),
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  }),
-                  */
-              const Text('Nothing in history',style: TextStyle(fontSize: 28),),
+
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: _history,
+                builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                  List<Widget> children;
+                  if (snapshot.hasData) {
+                    children = snapshot.data!.map((orderHistory) {
+                      return CloseStockCard(context: context, symbol: orderHistory['symbol'], name: orderHistory['name'], profit: orderHistory['price'],);
+                    }).toList();
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      Text(snapshot.error.toString())
+                    ];
+                  } else {
+                    children = const <Widget>[
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Text('Nothing in history', style: TextStyle(fontSize: 22, color: Colors.black),),
+                      )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
+                },
+              ),
+
               //---------------------------------------------------------------------------
-              /*CloseStockCard(context: context, title: 'APPL', name: 'Apple', price: 124),
-              CloseStockCard(context: context, title: 'NTFX', name: 'Netflix', price: 180),
+              //CloseStockCard(context: context, title: 'APPL', name: 'Apple', profit: 10),
+              /*CloseStockCard(context: context, title: 'NTFX', name: 'Netflix', price: 180),
               CloseStockCard(context: context, title: 'FB', name: 'Facebook', price: 24),
               CloseStockCard(context: context, title: 'NVDA', name: 'NVIDIA', price: 75),
               CloseStockCard(context: context, title: 'AMZN', name: 'Amazon', price: 320),*/
@@ -279,7 +307,7 @@ class _OrdersState extends State<Orders> {
 
   List<GDPData> getChartData() {
     final List<GDPData> chartData = [
-      GDPData('order', 2487),
+      GDPData('TSLA', 2487),
       GDPData('MSFT', 487),
       GDPData('FB', 180),
       GDPData('AMZN', 320),

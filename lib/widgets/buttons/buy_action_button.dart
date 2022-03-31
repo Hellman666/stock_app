@@ -15,8 +15,9 @@ class BuyActionButton extends StatefulWidget {
   final icon;
   final String Print;
   final String symbol;
+  final String buyName;
 
- BuyActionButton({required this.context, required this.name, required this.color, this.icon, required this.Print, required this.symbol});
+ BuyActionButton({required this.context, required this.name, required this.color, this.icon, required this.Print, required this.symbol, required this.buyName});
 
   @override
   State<BuyActionButton> createState() => _BuyActionButtonState();
@@ -32,12 +33,14 @@ class _BuyActionButtonState extends State<BuyActionButton> {
       User _userRow = User.fromMap(value[0]);
       setState(() {
         _balance = _userRow.balance;
+        _profit = _userRow.profit;
       });
     });
 
     super.initState();
   }
 
+  int? _profit;
   int? _balance;
   static int? order;
 
@@ -60,71 +63,69 @@ class _BuyActionButtonState extends State<BuyActionButton> {
               primary: HexColor(widget.color),
               onPrimary: Colors.white,
             ),
+
             onPressed: () {
-              /*if(TimeOfDay.now().hour > 22 && TimeOfDay.now().hour < 15.5) {
-                showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Information about market'),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('The market is open from 15:30 until 22:00'),
-                            Text('You bought the stock, but at the old price'),
-                          ],
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'OK'),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    ),
-                );
-              }*/
-
-              //int _balance = Portfolio()._balance;
-
-              //print(_balance);
               double stockPrice = double.parse(APIManager.price);
               int price = stockPrice.round();
               print(price);
               var calculate = _balance! - stockPrice;
               order = calculate.round();
               print (order);
-              DatabaseHelper.insertTrades(widget.symbol, price);
-              DatabaseHelper.getTrades();
-              //TODO: poslat hodnotu order do databáze Users místo balance
-              //TODO: udělat podmínku, pokud není dostatek peněz na účtě, tak si nemůžeme akcii koupit
 
 
+              if(_balance! - stockPrice < 0){
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('You can\'t buy a stock'),
+                      content: Text('You don\'t have enough money for stock ${widget.buyName}'),
+                      actions: [
+                        TextButton(
+                          onPressed: (){
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Portfolio(),
+                              ),
+                                  (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: const Text('OK'),
+                        )
+                      ],
+                    )
+                );
+              } else {
+                DatabaseHelper.updateBalance(User(id: 1, balance: order, profit: _profit));
+                print(_balance);
 
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('You buy a stock'),
+                      content: Text('At the moment you buy a stock ${widget.buyName}'),
+                      actions: [
+                        TextButton(
+                          onPressed: (){
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Portfolio(),
+                              ),
+                                  (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: const Text('OK'),
+                        )
+                      ],
+                    )
+                );
 
-              /*var percent = APIManager.percent;
-              print(percent);
-              print(percent.runtimeType);*/
-
-              //print(Order.runtimeType);
-
-
-              /*DatabaseHelper.insertUserRow();
-              DatabaseHelper.getBalance();
-              DatabaseHelper.insertHistoryRow();
-              DatabaseHelper.getHistory();
-              DatabaseHelper.insertFavourite();
-              DatabaseHelper.getFavourite();*/
-
-              //print(APIManager.price);
-              //print(APIManager.percent);
-
-
-              //print(APIManager.data["Global Quote"]["10. change percent"]);
-              /*print('$Print');
-              print(DatabaseHelper.getBalance() + '10');*/
+                DatabaseHelper.insertTrades(widget.symbol, price, widget.buyName);
+                DatabaseHelper.getTrades();
+              }
             },
             label: Text(widget.name),
-            //child: Text(name),
           ),
         )
     );

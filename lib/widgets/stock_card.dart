@@ -7,7 +7,7 @@ class StockCard extends StatelessWidget {
   final String name;
   //final String price;
 
-  StockCard({required this.context, required this.title, required this.name, /*required this.price*/});
+  StockCard({required this.context, required this.title, required this.name/*required this.price*/});
 
   get _height => MediaQuery.of(context).size.height;
   get width => MediaQuery.of(context).size.width;
@@ -26,9 +26,8 @@ class StockCard extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Stock(stockSymbol: title)),
+                  MaterialPageRoute(builder: (context) => Stock(stockSymbol: title, stockName: name,)),
                 );
-                //print('Card tapped.');
               },
               child: SizedBox(
                 width: width*0.8,
@@ -53,10 +52,6 @@ class StockCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    /*Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('$price', style: TextStyle(fontSize: 22)),
-                    ),*/
                   ],
                 ),
               ),

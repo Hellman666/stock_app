@@ -5,11 +5,11 @@ import 'package:stock_sim/screens/stock.dart';
 
 class CloseStockCard extends StatelessWidget {
   final BuildContext context;
-  final String title;
+  final String symbol;
   final String name;
-  final price;
+  final profit;
 
-  CloseStockCard({required this.context, required this.title, required this.name, required this.price});
+  CloseStockCard({required this.context, required this.symbol, required this.name, required this.profit});
 
   get _height => MediaQuery.of(context).size.height;
   get width => MediaQuery.of(context).size.width;
@@ -45,13 +45,13 @@ class CloseStockCard extends StatelessWidget {
                         Animation<double> animation,
                         Animation<double> secAnimation,)
                     {
-                      return Stock(stockSymbol: 'TSLA');
+                      return Stock(stockSymbol: symbol, stockName: name,);
                     }
                 ),
                 );
               },
               child: SizedBox(
-                width: width*0.8,
+                width: width*0.9,
                 height: _height*0.15,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,11 +62,14 @@ class CloseStockCard extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-                          child: Text(title, style: TextStyle(fontSize: 38.0),),
+                          child: Text(symbol, style: TextStyle(fontSize: 30.0),),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-                          child: Text(name, style: TextStyle(fontSize: 28.0, color: Colors.black54),),
+                        SizedBox(
+                          width: width*0.5,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
+                            child: Text(name, maxLines: 1, style: TextStyle(fontSize: 28.0, color: Colors.black54, overflow: TextOverflow.ellipsis),),
+                          ),
                         ),
                       ],
                     ),
@@ -76,7 +79,7 @@ class CloseStockCard extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 12.0),
-                          child: Text(price > 100 ? "+ " + '$price' + " \$" : "- " + '$price' + " \$", style: TextStyle(fontSize: 32),),
+                          child: Text(profit > 0 ? "+ $profit \$" : "$profit \$", style: TextStyle(fontSize: 32),),
                         ),
                       ],
                     )
@@ -89,7 +92,7 @@ class CloseStockCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(25.0),
               boxShadow: [
                 BoxShadow(
-                    color: price > 100 ? HexColor("#00FF00") : Colors.red,
+                    color: profit >= 0 ? HexColor("#00FF00") : Colors.red,
                     //color: HexColor("#00FF00"),
                     //color: Colors.grey.withOpacity(0.7),
                     spreadRadius: 2,

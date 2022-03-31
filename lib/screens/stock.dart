@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_sim/models/sqlite_model.dart';
+import 'package:stock_sim/screens/portfolio.dart';
 import 'package:stock_sim/services/sqlite_db.dart';
 import 'package:stock_sim/widgets/about_stock.dart';
 import 'package:stock_sim/widgets/buttons/buy_action_button.dart';
@@ -10,10 +11,14 @@ import 'package:stock_sim/widgets/chart.dart';
 
 class Stock extends StatefulWidget {
   final String stockSymbol;
+  final String stockName;
+  final int? stockId;
 
   const Stock({
     Key? key,
-    required this.stockSymbol
+    required this.stockSymbol,
+    required this.stockName,
+    this.stockId
   }) : super(key: key);
 
   @override
@@ -22,7 +27,7 @@ class Stock extends StatefulWidget {
 
 class _StockState extends State<Stock> {
 
-  bool isFavourite = false;
+  //bool isFavourite = false;
 
   get height => MediaQuery.of(context).size.height;
   get width => MediaQuery.of(context).size.width;
@@ -44,23 +49,45 @@ class _StockState extends State<Stock> {
           actions: <Widget>[
             IconButton(
 
-                icon: Icon(isFavourite ? Icons.star : Icons.star_border_outlined, color: Colors.white, size: 34.0),
+                icon: Icon(/*isFavourite ? Icons.star : */Icons.star_border_outlined, color: Colors.white, size: 34.0),
                 onPressed: () {
-                  setState(() {
+                  /*setState(() {
                     isFavourite ? Icons.star : Icons.star_border_outlined;
-                  });
+                  });*/
                   print('zmáčknuto');
-                  if(isFavourite == false){
-                    DatabaseHelper.insertFavourite(widget.stockSymbol);
-                    isFavourite = true;
-                    addToFavourite(widget.stockSymbol);
-                    icon: const Icon(
-                      Icons.star,
-                      color: Colors.white,
-                      size: 34.0,
+                  /*if(isFavourite == false){*/
+                  DatabaseHelper.insertFavourite(widget.stockSymbol, widget.stockName,);
+                  //isFavourite = true;
+                  addToFavourite(widget.stockSymbol, widget.stockName);
+                  icon: const Icon(
+                    Icons.star,
+                    color: Colors.white,
+                    size: 34.0,
+                  );
+                  print(widget.stockId);
+                  showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Favourite'),
+                        content: const Text('You add this stock to favourite'),
+                        actions: [
+                          TextButton(
+                            onPressed: (){
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Portfolio(),
+                                ),
+                                    (Route<dynamic> route) => false,
+                              );
+                            },
+                            child: const Text('OK'),
+                          )
+                        ],
+                      )
                     );
                   }
-                  else{
+                  /*else{
                     isFavourite = false;
                     removeFromFavourite();
                     icon: const Icon(
@@ -68,8 +95,30 @@ class _StockState extends State<Stock> {
                       color: Colors.white,
                       size: 34.0,
                     );
+                    DatabaseHelper.removeFavourite(widget.stockId);
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Not favourite'),
+                          content: const Text('You remove this stock to favourite'),
+                          actions: [
+                            TextButton(
+                              onPressed: (){
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Portfolio(),
+                                  ),
+                                      (Route<dynamic> route) => false,
+                                );
+                              },
+                              child: const Text('OK'),
+                            )
+                          ],
+                        )
+                    );
                   }
-                }
+                }*/
             )
           ],
           flexibleSpace: Container(
@@ -114,6 +163,7 @@ class _StockState extends State<Stock> {
                       icon: Icons.shopping_cart_outlined,
                       Print: "Buy",
                       symbol: widget.stockSymbol,
+                      buyName: widget.stockName,
                     ),
                     SellActionButton(
                       context: context,
@@ -121,6 +171,7 @@ class _StockState extends State<Stock> {
                       color: "FF0000",
                       icon: Icons.clear_rounded,
                       Print: "Sell",
+                      id: widget.stockId,
                     ),
                   ],
                 ),
@@ -148,7 +199,7 @@ class _StockState extends State<Stock> {
     );
   }
 
-addToFavourite(String symbol) async {
+addToFavourite(String symbol, String stockName) async {
     print ('add to favourite ' + widget.stockSymbol);
     String FavSymbol = widget.stockSymbol;
     //final symbol = Symbol(widget.stockSymbol);

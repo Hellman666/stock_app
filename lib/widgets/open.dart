@@ -9,8 +9,9 @@ class OpenStockCard extends StatelessWidget {
   final String name;
   final price;
   final String symbol;
+  final int id;
 
-  OpenStockCard({required this.context, required this.title, required this.name, required this.price, required this.symbol});
+  OpenStockCard({required this.context, required this.title, required this.name, required this.price, required this.symbol, required this.id});
 
   get _height => MediaQuery.of(context).size.height;
   get width => MediaQuery.of(context).size.width;
@@ -27,6 +28,7 @@ class OpenStockCard extends StatelessWidget {
             child: InkWell(
               splashColor: Colors.blue.withAlpha(30),
               onTap: () {
+                print(id);
                 Navigator.push(context, PageRouteBuilder(
                     transitionDuration: Duration(seconds: 1),
                     transitionsBuilder: (BuildContext context,
@@ -46,7 +48,7 @@ class OpenStockCard extends StatelessWidget {
                         Animation<double> animation,
                         Animation<double> secAnimation,)
                     {
-                      return Stock(stockSymbol: symbol);
+                      return Stock(stockSymbol: symbol, stockName: name, stockId: id);
                     }
                 ),
                 );
@@ -61,9 +63,12 @@ class OpenStockCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-                          child: Text(title, style: TextStyle(fontSize: 38.0),),
+                        SizedBox(
+                          width: width*0.6,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
+                            child: Text(title, maxLines: 1, style: TextStyle(fontSize: 30.0, overflow: TextOverflow.ellipsis),),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
