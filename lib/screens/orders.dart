@@ -104,7 +104,7 @@ class _OrdersState extends State<Orders> {
     });
   }
 
-  late List<GDPData> _chartData;
+  //late List<GDPData> _chartData;
   Future<List<Map<String, dynamic>>>? _trades;
   Future<List<Map<String, dynamic>>>? _history;
 
@@ -113,9 +113,20 @@ class _OrdersState extends State<Orders> {
     super.initState();
     _trades = _getTrades();
     _history = _getHistory();
-    _chartData = getChartData();
+
+    /*DatabaseHelper.getTrades().then((value) {
+      Order _orderRow = Order.fromMap(value[0]);
+      setState(() {
+        _symbol = _orderRow.symbol;
+        _price = _orderRow.buyPrice;
+      });
+    });
+
+    _chartData = getChartData(_symbol, _price);*/
   }
 
+  //late String _symbol;
+  //late int _price;
 
 
   Future<List<Map<String, dynamic>>> _getHistory() async{
@@ -173,18 +184,24 @@ class _OrdersState extends State<Orders> {
         child: Container(
           //color: HexColor("4A96AD"),
           child: Column(
-            children: [
-              SfCircularChart(
-                legend:
-                Legend(isVisible: true, textStyle: TextStyle(fontSize: 22)),
-                series: <CircularSeries>[
-                  DoughnutSeries<GDPData, String>(
-                    dataSource: _chartData,
-                    xValueMapper: (GDPData data, _) => data.continent,
-                    yValueMapper: (GDPData data, _) => data.gdp,
-                    dataLabelSettings: DataLabelSettings(isVisible: true),
-                  ),
-                ],
+            children: <Widget>[
+
+                /*SfCircularChart(
+                  legend:
+                  Legend(isVisible: true, textStyle: TextStyle(fontSize: 22)),
+                  series: <CircularSeries>[
+                    DoughnutSeries<GDPData, String>(
+                      dataSource: _chartData,
+                      xValueMapper: (GDPData data, _) => data.continent,
+                      yValueMapper: (GDPData data, _) => data.gdp,
+                      dataLabelSettings: DataLabelSettings(isVisible: true),
+                    ),
+                  ],
+                ),*/
+
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Image.asset('lib/assets/icon/icon.png', height: 200,),
               ),
 
               Text('My porfolio', style: Theme.of(context).textTheme.headline5,),
@@ -265,13 +282,6 @@ class _OrdersState extends State<Orders> {
                   );
                 },
               ),
-
-              //---------------------------------------------------------------------------
-              //CloseStockCard(context: context, title: 'APPL', name: 'Apple', profit: 10),
-              /*CloseStockCard(context: context, title: 'NTFX', name: 'Netflix', price: 180),
-              CloseStockCard(context: context, title: 'FB', name: 'Facebook', price: 24),
-              CloseStockCard(context: context, title: 'NVDA', name: 'NVIDIA', price: 75),
-              CloseStockCard(context: context, title: 'AMZN', name: 'Amazon', price: 320),*/
             ],
           ),
         ),
@@ -305,19 +315,16 @@ class _OrdersState extends State<Orders> {
     );
   }
 
-  List<GDPData> getChartData() {
+  /*List<GDPData> getChartData(String symbol, int price) {
     final List<GDPData> chartData = [
-      GDPData('TSLA', 2487),
-      GDPData('MSFT', 487),
-      GDPData('FB', 180),
-      GDPData('AMZN', 320),
+      GDPData(symbol, price),
     ];
     return chartData;
-  }
+  }*/
 }
 
-class GDPData{
+/*class GDPData{
   GDPData(this.continent, this.gdp);
   final String continent;
   final int gdp;
-}
+}*/

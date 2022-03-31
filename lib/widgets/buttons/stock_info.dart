@@ -66,21 +66,17 @@ class _StockInfoState extends State<StockInfo> {
                           style: TextStyle(fontSize: 22, color: Colors.grey),)
                     ),
                   ),
-                  price == null ? CircularProgressIndicator() : Text("\$ ${price.round()}" , style: TextStyle(fontSize: 32),),
-                  //TODO: dodělat případně futurebuilder
-                  /*FutureBuilder<List>(
+                  FutureBuilder<List>(
                     future: futureData,
-                    builder: (context, snapshot) {
+                    builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
                       if (snapshot.hasData) {
-                        var price = this.price;
-                        return Text('\$' + '${APIManager.price}',
-                          style: TextStyle(fontSize: 32),);
+                          return Text('\$ ${APIManager.price}', style: TextStyle(fontSize: 32));
                       } else if (snapshot.hasError) {
                         return Text("${snapshot.error}");
                       }
                       return CircularProgressIndicator();
                     },
-                  )*/
+                  )
                 ],
               ),
             ),
@@ -114,7 +110,17 @@ class _StockInfoState extends State<StockInfo> {
                             style: TextStyle(fontSize: 22, color: Colors.grey),)
                       ),
                     ),
-                    percent == null ? CircularProgressIndicator() : Text("${percent}" , style: TextStyle(fontSize: 32),),
+                    FutureBuilder<List>(
+                      future: futureData,
+                      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                        if (snapshot.hasData) {
+                          return Text('\$ ${APIManager.percent}', style: TextStyle(fontSize: 32));
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return CircularProgressIndicator();
+                      },
+                    ),
                   ],
                 ),
               )

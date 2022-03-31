@@ -6,7 +6,7 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:stock_sim/models/sqlite_model.dart';
 
 class DatabaseHelper {
-  static const _databaseName = "storage8.db";
+  static const _databaseName = "storage.db";
   static const _databaseVersion = 1;
 
   static const table = 'storage';
