@@ -142,11 +142,14 @@ class _PortfolioState extends State<Portfolio> {
                 TextButton(
                   onPressed: (){
                     DatabaseHelper.insertUserRow();
-                    Navigator.of(context).push(
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Portfolio()));
+                    /*Navigator.of(context).push
                       MaterialPageRoute(
                         builder: (context) => Portfolio(),
                       ),
-                    );
+                    );*/
                   },
                   child: const Text('Yes'),
                 )
@@ -202,6 +205,7 @@ class _PortfolioState extends State<Portfolio> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0),
         child: AppBar(
+          automaticallyImplyLeading: false,
           actions: [
             IconButton(
                 onPressed: (){

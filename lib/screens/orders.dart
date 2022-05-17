@@ -218,7 +218,7 @@ class _OrdersState extends State<Orders> {
                   List<Widget> children;
                   if (snapshot.hasData) {
                     children = snapshot.data!.map((order) {
-                      return OpenStockCard(context: context, title: order['name'], name: order["symbol"], price: order["buyPrice"], symbol: order['symbol'], id: order['id']);
+                      return OpenStockCard(context: context, name: order["name"], price: order["buyPrice"], symbol: order['symbol'], id: order['id']);
                     }).toList();
                   } else if (snapshot.hasError) {
                     children = <Widget>[

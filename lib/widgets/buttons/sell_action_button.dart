@@ -33,6 +33,7 @@ class _SellActionButtonState extends State<SellActionButton> {
 
     DatabaseHelper.getTrades().then((value) {
       Order _orderRow = Order.fromMap(value[0]);
+      //TODO: dodělat
       setState(() {
         _price = _orderRow.buyPrice;
         _historySymbol = _orderRow.symbol;
@@ -113,8 +114,9 @@ class _SellActionButtonState extends State<SellActionButton> {
               DatabaseHelper.updateBalance(User(id: 1, balance: newPrice, profit: finishProfit));
               DatabaseHelper.sellTrades(widget.id);
 
-
-              DatabaseHelper.insertHistory(_historySymbol, _historyName, finishProfit);
+              if(finishProfit >= 0) {
+                DatabaseHelper.insertHistory(_historySymbol, _historyName, profit);
+              }
 
               print('selled');
             },
