@@ -114,9 +114,7 @@ class _SellActionButtonState extends State<SellActionButton> {
               DatabaseHelper.updateBalance(User(id: 1, balance: newPrice, profit: finishProfit));
               DatabaseHelper.sellTrades(widget.id);
 
-              if(finishProfit >= 0) {
-                DatabaseHelper.insertHistory(_historySymbol, _historyName, profit);
-              }
+              DatabaseHelper.insertHistory(_historySymbol, _historyName, profit);
 
               print('selled');
             },
